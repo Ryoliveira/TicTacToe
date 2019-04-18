@@ -26,7 +26,7 @@ public class TicTacToe {
 
    /**
     * Debug constructor
-    * Change the values in char array to manipulate the board
+    * Change the values in char array to manipulate board
     * 
     * @param debug
     */
@@ -60,7 +60,7 @@ public class TicTacToe {
 
    //Generates number 0 or 1 to select who starts the game
    public void setFirst() {
-      curTurn = new Random().nextInt(2) == 0 ? 'x' : 'o';
+      curTurn = (new Random().nextInt(2)) == 0 ? 'x' : 'o';
    }
 
    // Returns current symbol of curTurn, 'x' or 'o'
