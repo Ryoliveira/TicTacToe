@@ -4,18 +4,18 @@ import java.util.*;
 
 public class TicTacToe {
    //Character to denote blank square
-   private final char BLANK = '-';
+   final static char BLANK = '-';
 
    //Squares 1-9
-   private final int TOP_LEFT = 0;
-   private final int TOP_MID = 1;
-   private final int TOP_RIGHT = 2;
-   private final int MID_LEFT = 3;
-   private final int MIDDLE = 4;
-   private final int MID_RIGHT = 5;
-   private final int BOTTOM_LEFT = 6;
-   private final int BOTTOM_MID = 7;
-   private final int BOTTOM_RIGHT = 8;
+   final static int TOP_LEFT = 0;
+   final static int TOP_MID = 1;
+   final static int TOP_RIGHT = 2;
+   final static int MID_LEFT = 3;
+   final static int MIDDLE = 4;
+   final static int MID_RIGHT = 5;
+   final static int BOTTOM_LEFT = 6;
+   final static int BOTTOM_MID = 7;
+   final static int BOTTOM_RIGHT = 8;
    
    private char squares[], winner, curTurn;
 
@@ -75,10 +75,7 @@ public class TicTacToe {
     * @throws IndexOutOfBoundsException if selected square is out of range.
     * @throws IllegalArgumentException if selected square is already occupied with player symbol.
     */
-   public void setSquare(int index) throws IndexOutOfBoundsException, IllegalArgumentException {
-      if (index < 0 || index > 8) {
-         throw new IndexOutOfBoundsException("setSquare(): Index must be between 0-8 inclusive.");
-      }
+   public void setSquare(int index) throws IllegalArgumentException {
       if (isOccupied(index)) {
          throw new IllegalArgumentException("setSquare(): Index is currently occupied, need an empty square.");
       }
@@ -93,10 +90,7 @@ public class TicTacToe {
     * @return true if square is occupied, false otherwise.
     * @throws IndexOutOfBoundsException if selected square is out of range.
     */
-   public boolean isOccupied(int index) throws IndexOutOfBoundsException {
-      if (index < 0 || index > 8) {
-         throw new IndexOutOfBoundsException("isOccupied(): Index must be between 0-8 inclusive.");
-      }
+   public boolean isOccupied(int index){
       return squares[index] != BLANK;
    }
 
@@ -114,45 +108,30 @@ public class TicTacToe {
     * Checks for winning row.
     * if row is found, then winning row is denoted by upper-case symbols.
     * 
-    * @return true is winning row is found, false otherwise.
+    * @return true if winning row is found, false otherwise.
     */
-   public boolean checkWinner() {
-      // Top Left - Top Right
-      if (squares[TOP_LEFT] == squares[TOP_MID] && squares[TOP_LEFT] == squares[TOP_RIGHT] && squares[TOP_LEFT] != BLANK) { 
-         setWinningRow(TOP_LEFT, TOP_MID, TOP_RIGHT);
+   public boolean hasWinner() {
+      int[][] allRows = new int[][]{{TOP_LEFT, TOP_MID, TOP_RIGHT}, 
+                                    {MID_LEFT, MIDDLE, MID_RIGHT}, 
+                                    {BOTTOM_LEFT, BOTTOM_MID, BOTTOM_RIGHT},
+                                    {TOP_LEFT, MID_LEFT, BOTTOM_LEFT},
+                                    {TOP_MID, MIDDLE, BOTTOM_MID},
+                                    {TOP_RIGHT, MID_RIGHT, BOTTOM_RIGHT},
+                                    {TOP_LEFT, MIDDLE, BOTTOM_RIGHT},
+                                    {BOTTOM_LEFT, MIDDLE, TOP_RIGHT}}; 
+      for(int[] row : allRows) {
+         if(squares[row[0]] != '-') {
+            char sqr1 = squares[row[0]];
+            char sqr2 = squares[row[1]];
+            char sqr3 = squares[row[2]];
+    
+            if(sqr1 == sqr2 && sqr1 == sqr3) { 
+               setWinningRow(row[0], row[1], row[2]);
+               return true;
+            }
+         }
       }
-      // Top Left - Bottom Left
-      else if (squares[TOP_LEFT] == squares[MID_LEFT] && squares[TOP_LEFT] == squares[BOTTOM_LEFT] && squares[TOP_LEFT] != BLANK) {
-         setWinningRow(TOP_LEFT, MID_LEFT, BOTTOM_LEFT);
-      }
-      // Bottom Left - Bottom Right
-      else if ((squares[BOTTOM_LEFT] == squares[BOTTOM_MID] && squares[BOTTOM_LEFT] == squares[BOTTOM_RIGHT]) && squares[BOTTOM_LEFT] != BLANK) {
-         setWinningRow(BOTTOM_LEFT, BOTTOM_MID, BOTTOM_RIGHT);
-      }
-      // Top Right - Bottom Right
-      else if (squares[TOP_RIGHT] == squares[MID_RIGHT] && squares[BOTTOM_RIGHT] == squares[TOP_RIGHT] && squares[TOP_RIGHT] != BLANK) {         
-         setWinningRow(TOP_RIGHT, MID_RIGHT, BOTTOM_RIGHT);
-      }
-      //Middle Vertical
-      else if ((squares[MIDDLE] == squares[TOP_MID] && squares[MIDDLE] == squares[BOTTOM_MID]) && squares[MIDDLE] != BLANK) {
-         setWinningRow(TOP_MID, MIDDLE, BOTTOM_MID);
-      }
-      //Middle Horizontal
-      else if (squares[MIDDLE] == squares[MID_LEFT] && squares[MIDDLE] == squares[MID_RIGHT] && squares[MIDDLE] != BLANK) {
-         setWinningRow(MID_LEFT, MIDDLE, MID_RIGHT);
-      }
-      // Middle Diagonal -- top left - bottom right
-      else if ((squares[MIDDLE] == squares[TOP_LEFT] && squares[MIDDLE] == squares[BOTTOM_RIGHT]) && squares[MIDDLE] != BLANK) {
-         setWinningRow(TOP_LEFT, MIDDLE, BOTTOM_RIGHT);
-      }
-      // Middle Diagonal -- bottom left - top right
-      else if (squares[MIDDLE] == squares[BOTTOM_LEFT] && squares[MIDDLE] == squares[TOP_RIGHT] && squares[MIDDLE] != BLANK) {
-         setWinningRow(BOTTOM_LEFT, MIDDLE, TOP_RIGHT);
-      }
-      else {
-         return false;
-      }
-      return true;
+      return false; 
    }
 
    // Displays TicTacToe board to screen
